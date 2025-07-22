@@ -1,0 +1,79 @@
+<x-app-layout>
+    <div class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded shadow">
+        <h2 class="text-2xl font-bold mb-4">Photo Enhanced Successfully</h2>
+        @php
+            // Use provided image height if available, else default to 400
+            $previewHeight = isset($enhanced_height) ? min($enhanced_height, 500) : 400;
+        @endphp
+        <div x-data="{ slider: 50 }" x-ref="sliderbox" class="relative w-full max-w-xl mx-auto mb-6 select-none bg-gray-200 rounded shadow overflow-hidden"
+            :style="'height: ' + $el.dataset.height + 'px'" data-height="{{ $previewHeight }}">
+            <!-- Enhanced image as background -->
+            <img src="{{ asset($enhanced) }}" alt="Enhanced Image"
+                 class="absolute inset-0 w-full h-full object-contain"
+                 draggable="false" style="z-index: 10;">
+            <!-- Original image on top, clipped -->
+            <img src="{{ asset($original) }}" alt="Original Image"
+                 class="absolute inset-0 w-full h-full object-contain"
+                 draggable="false"
+                 :style="'clip-path: inset(0 ' + (100 - slider) + '% 0 0); z-index: 20;'">
+            <!-- Slider handle -->
+            <div class="absolute inset-y-0" :style="'left: ' + slider + '%; transform: translateX(-50%); z-index: 30;'" style="width: 0;">
+                <div class="w-1 bg-indigo-500 h-full"></div>
+                <div class="w-6 h-6 bg-indigo-500 rounded-full border-4 border-white shadow-lg cursor-pointer absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    x-on:mousedown.prevent="
+                        const onMove = e => {
+                            let rect = $refs.sliderbox.getBoundingClientRect();
+                            let x = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+                            slider = Math.max(0, Math.min(100, ((x - rect.left) / rect.width) * 100));
+                        };
+                        const onUp = () => {
+                            window.removeEventListener('mousemove', onMove);
+                            window.removeEventListener('touchmove', onMove);
+                            window.removeEventListener('mouseup', onUp);
+                            window.removeEventListener('touchend', onUp);
+                        };
+                        window.addEventListener('mousemove', onMove);
+                        window.addEventListener('touchmove', onMove);
+                        window.addEventListener('mouseup', onUp);
+                        window.addEventListener('touchend', onUp);
+                    "
+                    x-on:touchstart.prevent="
+                        const onMove = e => {
+                            let rect = $refs.sliderbox.getBoundingClientRect();
+                            let x = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+                            slider = Math.max(0, Math.min(100, ((x - rect.left) / rect.width) * 100));
+                        };
+                        const onUp = () => {
+                            window.removeEventListener('mousemove', onMove);
+                            window.removeEventListener('touchmove', onMove);
+                            window.removeEventListener('mouseup', onUp);
+                            window.removeEventListener('touchend', onUp);
+                        };
+                        window.addEventListener('mousemove', onMove);
+                        window.addEventListener('touchmove', onMove);
+                        window.addEventListener('mouseup', onUp);
+                        window.addEventListener('touchend', onUp);
+                    "
+                ></div>
+            </div>
+        </div>
+        <div class="flex flex-col md:flex-row gap-4 justify-center items-center mt-4">
+            <a href="{{ asset($enhanced) }}" download class="mb-2 md:mb-0">
+                <x-primary-button>Download Enhanced Image</x-primary-button>
+            </a>
+            <a href="{{ route('enhancer.form') }}">
+                <x-primary-button>Enhance Another Photo</x-primary-button>
+            </a>
+        </div>
+        <div class="flex flex-col md:flex-row gap-6 items-center justify-center mb-6 mt-4">
+            <div class="flex-1 text-center">
+                <p class="mb-2 font-semibold">Original</p>
+                <img src="{{ asset($original) }}" alt="Original Image" class="mx-auto rounded shadow" style="max-height: {{ $previewHeight }}px;">
+            </div>
+            <div class="flex-1 text-center">
+                <p class="mb-2 font-semibold">Enhanced</p>
+                <img src="{{ asset($enhanced) }}" alt="Enhanced Image" class="mx-auto rounded shadow" style="max-height: {{ $previewHeight }}px;">
+            </div>
+        </div>
+    </div>
+</x-app-layout> 
