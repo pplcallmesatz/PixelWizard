@@ -1,4 +1,4 @@
-# BG Remover Pro
+# PixelWizard
 
 A professional AI-powered web application for background removal and image upscaling built with Laravel, Python, and modern web technologies.
 
