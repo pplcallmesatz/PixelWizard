@@ -1,4 +1,4 @@
-# PixelWizard
+# BG Remover Pro
 
 A professional AI-powered web application for background removal and image upscaling built with Laravel, Python, and modern web technologies.
 
@@ -75,6 +75,13 @@ cd bgremover
 #### **PHP Dependencies**
 ```bash
 composer install
+```
+
+#### **Python Virtual Environment (Recommended)**
+It is recommended to use a Python virtual environment (`venv`) to isolate dependencies:
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate.bat
 ```
 
 #### **Python Dependencies**
